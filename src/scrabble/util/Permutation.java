@@ -1,9 +1,12 @@
 package scrabble.util;
 
 
-public class Permutation {
+import java.util.Arrays;
 
+public class Permutation {
+private final String word;
 	public Permutation(String word) {
+		this.word=word.toLowerCase();
 	}
 
 	@Override
@@ -14,8 +17,9 @@ public class Permutation {
 
 	@Override
 	public boolean equals(Object obj) {
-		//TBD: Implement equals method
-		return false;
+		if(word==obj){return true;}
+		Permutation that=(Permutation) obj;
+		return this.getNormalized().equals(that.getNormalized());
 	}
 
 	@Override
@@ -24,8 +28,9 @@ public class Permutation {
 	}
 
 	public String getNormalized() {
-		// TBD: implement this method
-		return null;
+		char[] s=word.toCharArray();
+		Arrays.sort(s);
+		return new String(s);
 	}
 
 	public String getWord() {
