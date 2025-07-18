@@ -1,63 +1,73 @@
 package scrabble.data;
 
 import scrabble.util.Permutation;
+import scrabble.util.SubSets;
 
 import java.io.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Arrays;
+import java.util.*;
+
+import static scrabble.data.WordList.MIN_WORD_LENGTH;
 
 public class SimpleWordList implements WordList {
 	private Set	<String> words;
+
 	public SimpleWordList(){
 		this.words=new HashSet<>();
+
 	}
 
 	@Override
 	public Set<String> validWordsUsingAllTiles(String tileRackPart) {
-		Set<String>validWords=new HashSet<>();
-		String normalizeTileRack=normalize(tileRackPart);
-		int length=tileRackPart.length();
-		for(String word:words){
-		if(word.length()==length){
-			String normalizedWord = normalize(word);
-			if(normalizedWord.equals(normalize(normalizeTileRack))){
-				validWords.add(word);
-			}
 
+		Set<String> validWords = new HashSet<>();
+		Permutation tilePermutation = new Permutation(tileRackPart);
+		for (String word : words) {
+			if (word.length() == tileRackPart.length()) {
+				Permutation wordPermutation = new Permutation(word);
+				if (wordPermutation.equals(tilePermutation)) {
+					validWords.add(word);
+				}
 			}
 		}
-		return null;
+		return validWords;
 	}
+
 	private String normalize(String input){
 		char[] chars=input.toCharArray();
 		Arrays.sort(chars);
 		return new String(chars);
 	}
 
-
 	@Override
 	public Set<String> allValidWords(String tileRack) {
-		return null;
+		Set<String> allWords = new HashSet<>();
+		Set<String> subsets = SubSets.getSubSets(tileRack);
+
+		for (String subset: subsets) {
+			if (subset.length() >= MIN_WORD_LENGTH) {
+			allWords.addAll(validWordsUsingAllTiles(subset));
+			}
+		}
+		return allWords;
 	}
 
 	@Override
 	public boolean add(String word) {
-		// TODO Auto-generated method stub
-		return false;
+
+		return words.add(word.toLowerCase());
 	}
 
 	@Override
 	public boolean addAll(Collection<String> words) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean changed = false;
+		for (String word : words) {
+			add(word);
+		}
+		return changed;
 	}
 
 	@Override
 	public int size() {
-		// TODO Auto-generated method stub
 		return words.size();
 	}
 
@@ -68,12 +78,13 @@ public class SimpleWordList implements WordList {
 			while((line=reader.readLine())!=null){
 				line=line.trim().toLowerCase();
 				if(line.length()>=MIN_WORD_LENGTH){
-					words.add(line);
+					add(line);
 				}
 			}
 		} catch(IOException e){
+			System.out.println("oopsies");
 		}
-		return new SimpleWordList();
+		return this;
 	}
 
 }

@@ -11,13 +11,14 @@ private final String word;
 
 	@Override
 	public int hashCode() {
-		// TBD: implement this method
-		return 0;
+
+		return getNormalized().hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if(word==obj){return true;}
+		if(this==obj){return true;}
+		if (obj == null || getClass() != obj.getClass()) return false;
 		Permutation that=(Permutation) obj;
 		return this.getNormalized().equals(that.getNormalized());
 	}
@@ -28,19 +29,19 @@ private final String word;
 	}
 
 	public String getNormalized() {
-		char[] s=word.toCharArray();
+		char[] s = word.toCharArray();
 		Arrays.sort(s);
 		return new String(s);
 	}
 
 	public String getWord() {
-		// TBD: implement this method
-		return null;
+
+		return word;
 	}
 
 	public int length() {
-		// TBD: implement this method
-		return 0;
+
+		return word.length();
 	}
 
 }
